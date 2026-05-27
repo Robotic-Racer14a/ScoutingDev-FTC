@@ -2,7 +2,7 @@ import ftcOPRMethods as opr
 
 # --- Example Usage ---
 
-opr.event_key = "2023/USMIGOQ"
+opr.event_key = "2023/USMICMPFLWR"
 scouting_trust = 5 # How much to trust our data vs calculated OPR
 
 # opr.print_match_options()
@@ -25,21 +25,23 @@ drone = opr.calculate_team_average(team_objectives["drone"], teams, {3: 30, 2: 2
 
 compiled_score = []
 for team in teams:
-    a_bd_score = a_bd[team]
-    dc_bd_score = dc_bd[team]
+    a_bd_score = a_bd[team] * 5
+    dc_bd_score = dc_bd[team] * 3
     a_nav_score = a_nav[team]
     eg_nav_score = eg_nav[team]
     purple_score = purple[team]
     yellow_score = yellow[team]
     drone_score = drone[team]
+    setline_score = ((a_bd[team] + dc_bd[team]) // 8) * 10
     
     auto = purple_score + yellow_score + a_bd_score + a_nav_score
-    tele = dc_bd_score
+    tele = dc_bd_score + setline_score
     end = drone_score + eg_nav_score
     
     compiled_score.append({
         "Team": team,
         "Auto Score": auto,
+        "Tele Score": tele,
         "Endgame Score": end,
         "Total Score": auto + tele + end,
     })
