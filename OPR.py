@@ -2,10 +2,10 @@ import ftcOPRMethods as opr
 
 # --- Example Usage ---
 
-opr.event_key = "YEAR/key"
+opr.event_key = "2023/USMIGOQ"
 scouting_trust = 5 # How much to trust our data vs calculated OPR
 
-# opr.print_match_options()
+opr.print_match_options()
 alliance_scores = opr.get_event_matches_alliance_scores(["data",])
 team_objectives = opr.get_event_matches_team_objectives(["objective",])
 teams = opr.get_event_teams()
