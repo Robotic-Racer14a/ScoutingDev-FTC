@@ -4,7 +4,9 @@ import shelve
 
 BASE_URL = "https://api.ftcscout.org/rest/v1"
 
-def clear_data(event_key, key = None):
+event_key = ""
+
+def clear_data(key = None):
     with shelve.open("scouting") as db:
         if key == None:
             db[event_key] = {}
@@ -19,7 +21,7 @@ def clear_all():
     with shelve.open("scouting") as db:
         db.clear()
 
-def add_data(event_key, data):
+def add_data(data):
     with shelve.open("scouting") as db:
         try:
             previous_data = db[event_key]
@@ -30,14 +32,14 @@ def add_data(event_key, data):
             previous_data[key] = value
         db[event_key] = previous_data
     
-def get_data(event_key):
+def get_data():
     with shelve.open("scouting") as db:
         try:
             return db[event_key]
         except KeyError:
             return {}
 
-def print_match_options(event_key):
+def print_match_options():
     url = f"{BASE_URL}/events/{event_key}/matches"
     response = requests.get(url)
     response.raise_for_status()
@@ -45,7 +47,7 @@ def print_match_options(event_key):
     print(matches[0]["scores"]["red"])
     
 
-def get_event_matches_alliance_scores(event_key, criteras):
+def get_event_matches_alliance_scores(criteras):
     url = f"{BASE_URL}/events/{event_key}/matches"
     response = requests.get(url)
     response.raise_for_status()
@@ -64,7 +66,7 @@ def get_event_matches_alliance_scores(event_key, criteras):
         matchList[critera] = critera_list
     return matchList
 
-def get_event_matches_team_objectives(event_key, criteras):
+def get_event_matches_team_objectives(criteras):
     url = f"{BASE_URL}/events/{event_key}/matches"
     response = requests.get(url)
     response.raise_for_status()
@@ -83,7 +85,7 @@ def get_event_matches_team_objectives(event_key, criteras):
         matchList[critera] = critera_list
     return matchList
 
-def get_event_teams(event_key):
+def get_event_teams():
     url = f"{BASE_URL}/events/{event_key}/teams"
     response = requests.get(url)
     response.raise_for_status()
