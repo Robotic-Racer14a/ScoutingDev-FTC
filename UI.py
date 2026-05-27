@@ -145,8 +145,8 @@ v_auto_data  = tk.IntVar(value=0)
 v_dc_data    = tk.IntVar(value=0)
 
 fields = [
-    ("Data",  v_auto_data,  4, 0),
-    ("Data",   v_dc_data,  4, 2),
+    ("Backdrop",  v_auto_data,  4, 0),
+    ("Backdrop",   v_dc_data,  4, 2),
 ]
 
 for lbl, var, row, col in fields:
@@ -304,5 +304,5 @@ root.mainloop()
 # ── After window closes — print the dict ─────────────────────────────────────
 print("\n=== Scouting Data ===")
 print(scouting_data)
-opr.event_key = f"YEAR/{v_event.get()}"
+opr.event_key = f"2023/{v_event.get()}"
 opr.add_data(scouting_data)
