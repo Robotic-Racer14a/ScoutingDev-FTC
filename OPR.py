@@ -101,8 +101,6 @@ scouting_trust = 5 # How much to trust our data vs calculated OPR
 
 #Picking Info
 team_picking = 9933
-auto_ran_basket = True
-tele_basket = True
 
 # opr.print_match_options()
 alliance_scores = opr.get_event_matches_alliance_scores(["autoSampleLow", "autoSampleHigh", "autoSpecimenLow", "autoSpecimenHigh", "dcSampleLow", "dcSampleHigh", "dcSpecimenLow", "dcSpecimenHigh"])
@@ -133,44 +131,34 @@ dc_park = opr.calculate_team_average(team_objectives["autoPark"], teams, {"Ascen
 
 
 compiled_score = []
-team_a_score = (a_sample_high[team_picking] * 8) if auto_ran_basket else (a_spec_high[team_picking] * 10)
-team_dc_score = (dc_sample_high[team_picking] * 8) if tele_basket else (dc_spec_high[team_picking] * 10)
+team_a_sample_score = (a_sample_low[team_picking] * 4) + (a_sample_high[team_picking] * 8)
+team_a_spec_score = (a_spec_low[team_picking] * 5) + (a_spec_high[team_picking] * 10)
+team_dc_sample_score = (dc_sample_low[team_picking] * 4) + (dc_sample_high[team_picking] * 8)
+team_dc_spec_score = (dc_spec_low[team_picking] * 5) + (dc_spec_high[team_picking] * 10)
 team_objective_score = a_park[team_picking] + dc_park[team_picking]
 for team in teams:
-    a_sample_score = a_sample_high[team] * 8
-    a_spec_score = a_spec_high[team] * 10
-    dc_sample_score = dc_sample_high[team] * 8
-    dc_spec_score = dc_spec_high[team] * 10
+    a_sample_score = (a_sample_low[team] * 4) + (a_sample_high[team] * 8)
+    a_spec_score = (a_spec_low[team] * 5) + (a_spec_high[team] * 10)
+    dc_sample_score = (dc_sample_low[team] * 4) + (dc_sample_high[team] * 8)
+    dc_spec_score = (dc_spec_low[team] * 5) + (dc_spec_high[team] * 10)
     
     a_park_score = a_park[team]
     dc_park_score = dc_park[team]
     
     
     #Auto Part of Pick List
-    a_team_with_picking = team_a_score
-    a_team_anti_picking = 0
-    
-    if auto_ran_basket:
-        a_team_with_picking += a_spec_score
-        a_team_anti_picking = a_sample_score
-    else:
-        a_team_with_picking += a_sample_score
-        a_team_anti_picking = a_spec_score
+    a_picking_team_basket = team_a_sample_score + a_spec_score
+    a_picking_team_clip = team_a_spec_score + a_sample_score
         
-    auto_score = max(a_team_with_picking, a_team_anti_picking)
+    auto_score = max(a_picking_team_basket, a_picking_team_clip)
     
     #Tele Part of Pick List
-    dc_team_with_picking = team_dc_score
-    dc_team_anti_picking = (team_dc_score * .7)
-    
-    if tele_basket:
-        dc_team_with_picking += dc_spec_score
-        dc_team_anti_picking += (dc_sample_score * .7)
-    else:
-        dc_team_with_picking += dc_sample_score
-        dc_team_anti_picking += (dc_spec_score * .7)
+    dc_picking_team_basket = team_dc_sample_score + dc_spec_score
+    dc_picking_team_clip = team_dc_spec_score + dc_sample_score
+    dc_both_basket = (team_dc_sample_score * 0.7) + (dc_sample_score * 0.7)
+    dc_both_clip = (team_dc_spec_score * 0.7) + (dc_spec_score * 0.7)
         
-    tele_score = max(dc_team_with_picking, dc_team_anti_picking)
+    tele_score = max(dc_picking_team_basket, dc_picking_team_clip, dc_both_basket, dc_both_clip)
     
     compiled_score.append({
         "Team": team,
