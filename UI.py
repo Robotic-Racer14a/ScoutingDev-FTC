@@ -88,6 +88,60 @@ def make_entry(parent, var, width=8):
     )
     return e
 
+# ── Helper: toggle group (mutually exclusive option buttons) ─────────────────
+def make_toggle_group(parent, title, options, var=None, accent_color=ACCENT2):
+    """
+    Returns a labeled frame of mutually exclusive toggle buttons.
+
+    Parameters
+    ----------
+    parent       : tk parent widget
+    title        : str  — label shown above the buttons
+    options      : list[str] — button labels; first option is selected by default
+    var          : tk.StringVar or None — if None, one is created internally
+    accent_color : str — highlight color for the selected button
+
+    Returns
+    -------
+    (frame, var)  — the outer frame and the StringVar holding the selection
+    """
+    if var is None:
+        var = tk.StringVar(value=options[0])
+
+    outer = tk.Frame(parent, bg=PANEL)
+
+    tk.Label(outer, text=title.upper(), font=FONT_LABEL, bg=PANEL, fg=MUTED
+             ).pack(anchor="w", pady=(0, 4))
+
+    btn_row = tk.Frame(outer, bg=PANEL)
+    btn_row.pack(anchor="w")
+
+    buttons = {}
+
+    def select(opt):
+        var.set(opt)
+        for o, b in buttons.items():
+            if o == opt:
+                b.config(bg=accent_color, fg=BG)
+            else:
+                b.config(bg=BORDER, fg=TEXT)
+
+    for opt in options:
+        is_first = (opt == options[0])
+        b = tk.Button(
+            btn_row, text=opt,
+            bg=accent_color if is_first else BORDER,
+            fg=BG if is_first else TEXT,
+            font=FONT_LABEL, relief="flat", bd=0,
+            cursor="hand2", padx=10, pady=4,
+            activebackground=accent_color, activeforeground=BG,
+            command=lambda o=opt: select(o),
+        )
+        b.pack(side="left", padx=(0, 3))
+        buttons[opt] = b
+
+    return outer, var
+
 # ── Header ────────────────────────────────────────────────────────────────────
 header = tk.Frame(root, bg=BG)
 header.pack(fill="x", padx=24, pady=(20, 4))
