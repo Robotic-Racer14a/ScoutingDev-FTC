@@ -40,7 +40,7 @@ def get_match_data():
             return {}
         
 def clear_pit_data(key = None):
-    with shelve.open("scouting") as db:
+    with shelve.open("pit_scouting") as db:
         if key == None:
             db[event_key] = {}
         else:
@@ -51,11 +51,11 @@ def clear_pit_data(key = None):
             db[event_key] = new_list
         
 def clear_pit_all():
-    with shelve.open("scouting") as db:
+    with shelve.open("pit_scouting") as db:
         db.clear()
 
 def add_pit_data(data):
-    with shelve.open("scouting") as db:
+    with shelve.open("pit_scouting") as db:
         try:
             previous_data = db[event_key]
         except KeyError:
@@ -66,7 +66,7 @@ def add_pit_data(data):
         db[event_key] = previous_data
     
 def get_pit_data():
-    with shelve.open("scouting") as db:
+    with shelve.open("pit_scouting") as db:
         try:
             return db[event_key]
         except KeyError:
