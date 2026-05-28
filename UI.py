@@ -171,7 +171,7 @@ v_event = tk.StringVar(value="")
 
 tk.Label(form_frame, text="TEAM #", font=FONT_LABEL, bg=PANEL, fg=MUTED
          ).grid(row=1, column=0, sticky="w", padx=(16, 4), pady=4)
-make_counter(form_frame, v_team).grid(row=1, column=1, sticky="w",
+make_entry(form_frame, v_team).grid(row=1, column=1, sticky="w",
                                       padx=(0, 24), pady=4)
 
 tk.Label(form_frame, text="MATCH #", font=FONT_LABEL, bg=PANEL, fg=MUTED
