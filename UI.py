@@ -141,12 +141,16 @@ for col, label, color in [(0, "AUTO", ACCENT), (2, "DRIVER CONTROLLED", SUCCESS)
                     padx=(16 if col == 0 else 0, 0), pady=2)
 
 # Score inputs
-v_auto_data  = tk.IntVar(value=0)
-v_dc_data    = tk.IntVar(value=0)
+v_auto_sample_data  = tk.IntVar(value=0)
+v_auto_spec_data  = tk.IntVar(value=0)
+v_dc_sample_data    = tk.IntVar(value=0)
+v_dc_spec_data    = tk.IntVar(value=0)
 
 fields = [
-    ("Data",  v_auto_data,  4, 0),
-    ("Data",   v_dc_data,  4, 2),
+    ("Basket Count",  v_auto_sample_data,  4, 0),
+    ("Clip Count",  v_auto_spec_data,  5, 0),
+    ("Basket Count",   v_dc_sample_data,  4, 2),
+    ("Clip Count",   v_dc_spec_data,  5, 2),
 ]
 
 for lbl, var, row, col in fields:
@@ -170,14 +174,14 @@ def add_entry():
         messagebox.showwarning("Missing Field", "Team number must be greater than 0.", parent=root)
         return
     match = v_match.get()
-    key   = (f"frc{team}", match)
-    val   = (v_auto_data.get(), v_auto_data.get())
+    key   = (team, match)
+    val   = (v_auto_sample_data.get(), v_auto_spec_data.get(), v_dc_sample_data.get(), v_dc_spec_data.get())
     scouting_data[key] = val
     refresh_table()
     update_counter()
     status_var.set(f"✓  Added entry for Team {team}, Match {match}")
     # Reset scores and team
-    for v in (v_auto_data, v_auto_data):
+    for v in (v_auto_sample_data, v_dc_sample_data, v_auto_spec_data, v_dc_spec_data):
         v.set(0)
     v_team.set(0)
     v_match.set(match + 1)
@@ -244,7 +248,7 @@ tbl_header.pack(fill="x", padx=24, pady=(8, 2))
 tk.Label(tbl_header, text="RECORDED ENTRIES", font=FONT_LABEL,
          bg=BG, fg=ACCENT2).pack(side="left")
 
-cols = ("Team", "Match", "Auto Data", "DC Data")
+cols = ("Team", "Match", "Auto Basket", "Auto Clip", "DC Basket", "DC Clip")
 
 style = ttk.Style()
 style.theme_use("clam")
@@ -277,8 +281,8 @@ scrollbar.pack(side="right", fill="y")
 
 def refresh_table():
     tree.delete(*tree.get_children())
-    for (team, match), (abr, atr) in scouting_data.items():
-        tree.insert("", "end", values=(team, match, abr, atr))
+    for (team, match), (asam, aspe, dcsam, dcspe) in scouting_data.items():
+        tree.insert("", "end", values=(team, match, asam, aspe, dcsam, dcspe))
 
 # ── Delete selected row ───────────────────────────────────────────────────────
 def delete_selected(event=None):
@@ -304,5 +308,5 @@ root.mainloop()
 # ── After window closes — print the dict ─────────────────────────────────────
 print("\n=== Scouting Data ===")
 print(scouting_data)
-opr.event_key = f"YEAR/{v_event.get()}"
+opr.event_key = f"2024/{v_event.get()}"
 opr.add_data(scouting_data)
