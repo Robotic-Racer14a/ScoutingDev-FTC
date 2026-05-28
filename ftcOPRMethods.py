@@ -6,7 +6,7 @@ BASE_URL = "https://api.ftcscout.org/rest/v1"
 
 event_key = ""
 
-def clear_data(key = None):
+def clear_match_data(key = None):
     with shelve.open("scouting") as db:
         if key == None:
             db[event_key] = {}
@@ -17,11 +17,11 @@ def clear_data(key = None):
                     new_list[key] = value
             db[event_key] = new_list
         
-def clear_all():
+def clear_match_all():
     with shelve.open("scouting") as db:
         db.clear()
 
-def add_data(data):
+def add_match_data(data):
     with shelve.open("scouting") as db:
         try:
             previous_data = db[event_key]
@@ -32,7 +32,40 @@ def add_data(data):
             previous_data[key] = value
         db[event_key] = previous_data
     
-def get_data():
+def get_match_data():
+    with shelve.open("scouting") as db:
+        try:
+            return db[event_key]
+        except KeyError:
+            return {}
+        
+def clear_pit_data(key = None):
+    with shelve.open("scouting") as db:
+        if key == None:
+            db[event_key] = {}
+        else:
+            new_list = {}
+            for key, value in db[event_key].items():
+                if key != key:
+                    new_list[key] = value
+            db[event_key] = new_list
+        
+def clear_pit_all():
+    with shelve.open("scouting") as db:
+        db.clear()
+
+def add_pit_data(data):
+    with shelve.open("scouting") as db:
+        try:
+            previous_data = db[event_key]
+        except KeyError:
+            previous_data = {}
+            
+        for key, value in data.items():
+            previous_data[key] = value
+        db[event_key] = previous_data
+    
+def get_pit_data():
     with shelve.open("scouting") as db:
         try:
             return db[event_key]
@@ -175,13 +208,7 @@ def calculate_opr_weighted_per_match(matches, teams, scouted_scores = {}, scout_
             continue
 
         if match_i not in valid_match_keys:
-            # Pit scout: non-zero values still act as a soft prior
-            if observed_score != 0:
-                row = [0] * n
-                row[team_index[team]] = 1
-                A.append(row)
-                b.append(observed_score * 1)
-            # Zero is already handled above via pit_zero_teams
+            # Ignore Pit scouting data in match data
             continue
 
         # In-match scouting
