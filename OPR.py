@@ -20,7 +20,7 @@ opr.event_key = "2024/USMIGOQ"
 scouting_trust = 5 # How much to trust our data vs calculated OPR
 
 #Picking Info
-team_picking = 9933
+team_picking = 10653
 auto_ran_basket = True
 tele_basket = True
 
@@ -68,16 +68,16 @@ for team in teams:
         
     auto_score = max(a_team_with_picking, a_team_anti_picking)
     
-    #tele Part of Pick List
+    #Tele Part of Pick List
     dc_team_with_picking = team_dc_score
-    dc_team_anti_picking = 0
+    dc_team_anti_picking = (team_dc_score * .7)
     
     if tele_basket:
         dc_team_with_picking += dc_spec_score
-        dc_team_anti_picking = dc_sample_score
+        dc_team_anti_picking += (dc_sample_score * .7)
     else:
         dc_team_with_picking += dc_sample_score
-        dc_team_anti_picking = dc_spec_score
+        dc_team_anti_picking += (dc_spec_score * .7)
         
     tele_score = max(dc_team_with_picking, dc_team_anti_picking)
     
@@ -85,7 +85,7 @@ for team in teams:
         "Team": team,
         "Clip Score": a_spec_score + dc_spec_score + a_park_score + dc_park_score,
         "Basket Score": a_sample_score + dc_sample_score + a_park_score + dc_park_score,
-        "Total Score": a_sample_score + dc_sample_score + a_spec_score + dc_spec_score + a_park_score + dc_park_score,
+        "Total Score": (a_sample_score if a_sample_score > a_spec_score else a_spec_score) + (dc_sample_score if dc_sample_score > dc_spec_score else dc_spec_score) + a_park_score + dc_park_score,
         "Team Pick List": auto_score + tele_score + a_park_score + dc_park_score + team_objective_score,
     })
 
