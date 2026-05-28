@@ -110,7 +110,13 @@ team_objectives = opr.get_event_matches_team_objectives(["autoPark", "dcPark"])
 teams = opr.get_event_teams()
 
 match_scouted = opr.get_match_data() 
-pit_scouted = opr.get_pit_data()
+pit_scouted = estimate_missing_pit(
+    opr.calculate_opr_weighted_per_match(alliance_scores["dcSpecimenLow"], teams),
+    opr.calculate_opr_weighted_per_match(alliance_scores["dcSpecimenHigh"], teams),
+    opr.calculate_opr_weighted_per_match(alliance_scores["dcSampleLow"], teams),
+    opr.calculate_opr_weighted_per_match(alliance_scores["dcSampleHigh"], teams),
+    opr.get_pit_data()
+    )
 scouted = combine_match_and_pit(match_scouted, pit_scouted)
 
 a_sample_low = opr.calculate_opr_weighted_per_match(alliance_scores["autoSampleLow"], teams, {key: value[0] for key, value in scouted.items()}, scouting_trust)
