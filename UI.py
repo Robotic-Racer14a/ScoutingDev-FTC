@@ -305,4 +305,4 @@ root.mainloop()
 print("\n=== Scouting Data ===")
 print(scouting_data)
 opr.event_key = f"YEAR/{v_event.get()}"
-opr.add_data(scouting_data)
+opr.add_match_data(scouting_data)
