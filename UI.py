@@ -63,17 +63,47 @@ def make_counter(parent, var, min_val=0, max_val=999):
         if var.get() < max_val:
             var.set(var.get() + 1)
  
+    def on_entry_change(*_):
+        raw = entry_var.get()
+        try:
+            val = int(raw)
+            val = max(min_val, min(max_val, val))
+            var.set(val)
+        except ValueError:
+            pass  # ignore non-numeric keystrokes mid-type
+ 
+    def on_focus_out(_):
+        # Clamp and rewrite on blur so partial input is cleaned up
+        try:
+            val = max(min_val, min(max_val, int(entry_var.get())))
+        except ValueError:
+            val = min_val
+        var.set(val)
+        entry_var.set(str(val))
+ 
+    # Keep entry_var in sync when var is changed externally (buttons, reset, etc.)
+    entry_var = tk.StringVar(value=str(var.get()))
+    def sync_entry(*_):
+        entry_var.set(str(var.get()))
+    var.trace_add("write", sync_entry)
+ 
     tk.Button(frame, text="−", command=decrement,
-              bg="#81362e", activebackground="#be4234", activeforeground=TEXT,
+              bg="#c0392b", activebackground="#e74c3c", activeforeground=TEXT,
               **btn_base).pack(side="left")
-    tk.Label(
-        frame, textvariable=var, width=4,
+    entry = tk.Entry(
+        frame, textvariable=entry_var, width=4,
         font=FONT_INPUT, bg=INPUT_BG, fg=TEXT,
+        insertbackground=TEXT, justify="center",
+        relief="flat", bd=0,
         highlightthickness=1, highlightbackground=BORDER,
-        anchor="center",
-    ).pack(side="left", padx=2)
+        highlightcolor=ACCENT2,
+    )
+    entry.pack(side="left", padx=2)
+    entry_var.trace_add("write", on_entry_change)
+    entry.bind("<FocusOut>", on_focus_out)
+    entry.bind("<Return>", on_focus_out)
     tk.Button(frame, text="+", command=increment,
-              bg="#356d2f", activebackground="#31b349", activeforeground=TEXT,
+              bg="#27ae60", activebackground="#2ecc71", activeforeground=TEXT,
               **btn_base).pack(side="left")
  
     return frame
@@ -171,7 +201,7 @@ v_event = tk.StringVar(value="")
 
 tk.Label(form_frame, text="TEAM #", font=FONT_LABEL, bg=PANEL, fg=MUTED
          ).grid(row=1, column=0, sticky="w", padx=(16, 4), pady=4)
-make_spinbox(form_frame, v_team).grid(row=1, column=1, sticky="w",
+make_entry(form_frame, v_team).grid(row=1, column=1, sticky="w",
                                       padx=(0, 24), pady=4)
 
 tk.Label(form_frame, text="MATCH #", font=FONT_LABEL, bg=PANEL, fg=MUTED
