@@ -20,7 +20,7 @@ opr.event_key = "2024/USMIGOQ"
 scouting_trust = 5 # How much to trust our data vs calculated OPR
 
 #Picking Info
-team_picking = 10653
+team_picking = 9933
 auto_ran_basket = True
 tele_basket = True
 
