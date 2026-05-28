@@ -1,18 +1,14 @@
 import ftcOPRMethods as opr
 
-def get_total_count(matches_1, matches_2):
-    new_list = []
-    for i in range(len(matches_1)):
-        match_1 = matches_1[i]
-        match_2 = matches_2[i]
-        new_list.append({
-            "red_teams": match_1["red_teams"],
-            "red_score": match_1["red_score"] + match_2["red_score"],
-            "blue_teams": match_1["blue_teams"],
-            "blue_score": match_1["blue_score"] + match_2["blue_score"],
-            "match_key": match_1["match_key"]
-        })
-    return new_list
+def combine_match_and_pit(match_data, pit_data):
+    scout_data = {}
+    for key, data in match_data.items():
+        scout_data[key] = data
+        
+    for key, data in pit_data.items():
+        scout_data[key] = data
+        
+    return scout_data
 
 # --- Example Usage ---
 
@@ -29,8 +25,9 @@ alliance_scores = opr.get_event_matches_alliance_scores(["autoSampleLow", "autoS
 team_objectives = opr.get_event_matches_team_objectives(["autoPark", "dcPark"])
 teams = opr.get_event_teams()
 
-scouted = opr.get_data() # Data in form ("frc####", "qm##"): (autoBranchCount, autoTroughCount, teleopBranchCount, teleopTroughCount, netAlgaeCount)
-#For pit scouting, use this example ("frc2337", 0): (3, 0, 17, 1, 0)
+match_scouted = opr.get_match_data() 
+pit_scouted = opr.get_pit_data()
+scouted = combine_match_and_pit(match_scouted, pit_scouted)
 
 a_sample = opr.calculate_opr_weighted_per_match(get_total_count(alliance_scores["autoSampleLow"], alliance_scores["autoSampleHigh"]), teams, {key: value[0] for key, value in scouted.items()}, scouting_trust)
 a_spec = opr.calculate_opr_weighted_per_match(get_total_count(alliance_scores["autoSpecimenLow"], alliance_scores["autoSpecimenHigh"]), teams, {key: value[1] for key, value in scouted.items()}, scouting_trust)
