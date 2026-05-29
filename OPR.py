@@ -5,8 +5,8 @@ def combine_match_and_pit(match_data, pit_data):
     for key, data in match_data.items():
         scout_data[key] = data
         
-    for key, data in pit_data.items():
-        scout_data[key] = data
+    # for key, data in pit_data.items():
+    #     scout_data[key] = data
         
     return scout_data
 
@@ -49,12 +49,21 @@ for team in teams:
     tele = dc_bd_score + setline_score
     end = drone_score + eg_nav_score
     
+    if (team, "PIT") in pit_scouted:
+        close_auto = purple_score + ((yellow_score + a_bd_score + a_nav_score) if pit_scouted[(team, "PIT")][0] == "Yes" else 0)
+        far_auto = purple_score + ((yellow_score + a_bd_score + a_nav_score) if pit_scouted[(team, "PIT")][1] == "Yes" else 0)
+    else:
+        close_auto = auto
+        far_auto = purple_score
+        
     compiled_score.append({
         "Team": team,
         "Auto Score": auto,
         "Tele Score": tele,
         "Endgame Score": end,
+        "Close Score": close_auto + tele + end,
+        "Far Score": far_auto + tele + end,
         "Total Score": auto + tele + end,
     })
 
-opr.print_results(compiled_score, "Total Score", 50, 1, True)
+opr.print_results(compiled_score, "Close Score", 50, 1, True)
