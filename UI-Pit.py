@@ -213,13 +213,13 @@ tk.Frame(form_frame, bg=BORDER, height=1).grid(
     row=2, column=0, columnspan=4, sticky="ew", padx=16, pady=6)
 
 task_one_frame, v_task_one = make_toggle_group(
-    form_frame, "Task 1", ["High", "Low", "None"],
+    form_frame, "Close Auto", ["Yes", "No"],
     accent_color="#dddddd"
 )
 task_one_frame.grid(row=7, column=0, columnspan=4, sticky="w", padx=16, pady=(4, 12))
 
 task_two_frame, v_task_two = make_toggle_group(
-    form_frame, "Task 2", ["High", "Low", "None"],
+    form_frame, "Far Auto", ["Yes", "No"],
     accent_color="#dddddd"
 )
 task_two_frame.grid(row=7, column=3, columnspan=4, sticky="w", padx=16, pady=(4, 12))
@@ -308,7 +308,7 @@ tbl_header.pack(fill="x", padx=24, pady=(8, 2))
 tk.Label(tbl_header, text="RECORDED ENTRIES", font=FONT_LABEL,
          bg=BG, fg=ACCENT2).pack(side="left")
 
-cols = ("Team", "Task One", "Task Two")
+cols = ("Team", "Close Auto", "Far Auto")
 
 style = ttk.Style()
 style.theme_use("clam")
@@ -368,5 +368,5 @@ root.mainloop()
 # ── After window closes — print the dict ─────────────────────────────────────
 print("\n=== Scouting Data ===")
 print(scouting_data)
-opr.event_key = f"YEAR/{v_event.get()}"
+opr.event_key = f"2023/{v_event.get()}"
 opr.add_pit_data(scouting_data)
